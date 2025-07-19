@@ -45,4 +45,4 @@ RUN groupadd -r appuser && useradd -r -g appuser appuser
 RUN chown -R appuser:appuser /app
 USER appuser
 
-ENTRYPOINT ["dotnet", "AI-Agent-Document_Processing.dll"]
+ENTRYPOINT ["dotnet", "DocumentProcessingAgent.dll"]
