@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  document-processor:
+    build: .
+    container_name: document-processing-agent
+    environment:
+      - OLLAMA_ENDPOINT=http://ollama:11434/api/chat
+      - OLLAMA_MODEL=tinyllama
+      - ASPNETCORE_ENVIRONMENT=Production
+    volumes:
+      - ./SampleTexts:/app/SampleTexts:ro
+      - ./Analysis:/app/Analysis
+      - ./Logs:/app/Logs
+    depends_on:
+      - ollama
+    networks:
+      - document-net
+    stdin_open: true
+    tty: true
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: ollama-server
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      - OLLAMA_ORIGINS=*
+    networks:
+      - document-net
+    # Uncomment the following lines if you have GPU support
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [gpu]
+
+volumes:
+  ollama-data:
+    driver: local
+
+networks:
+  document-net:
+    driver: bridge
